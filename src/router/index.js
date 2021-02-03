@@ -46,118 +46,50 @@ export const constantRoutes = [
   {
     path: '/',
     component: Layout,
-    redirect: '/dashboard',
+    redirect: '/basic',
+  },
+  {
+    path: '/basic',
+    component: Layout,
+    redirect: '/basic/experiment',
+    meta: { title: '基础管理', icon: 'dashboard' },
     children: [{
-      path: 'dashboard',
-      name: 'Dashboard',
-      component: () => import('@/views/dashboard/index'),
-      meta: { title: 'Dashboard', icon: 'dashboard' }
-    }]
-  },
-
-  {
-    path: '/example',
-    component: Layout,
-    redirect: '/example/table',
-    name: 'Example',
-    meta: { title: 'Example', icon: 'el-icon-s-help' },
-    children: [
-      {
-        path: 'table',
-        name: 'Table',
-        component: () => import('@/views/table/index'),
-        meta: { title: 'Table', icon: 'table' }
-      },
-      {
-        path: 'tree',
-        name: 'Tree',
-        component: () => import('@/views/tree/index'),
-        meta: { title: 'Tree', icon: 'tree' }
-      }
-    ]
-  },
-
-  {
-    path: '/form',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'Form',
-        component: () => import('@/views/form/index'),
-        meta: { title: 'Form', icon: 'form' }
-      }
-    ]
-  },
-
-  {
-    path: '/nested',
-    component: Layout,
-    redirect: '/nested/menu1',
-    name: 'Nested',
-    meta: {
-      title: 'Nested',
-      icon: 'nested'
+      path: 'experiment',
+      name: 'Experiment',
+      component: () => import('@/views/basic/experiment/index'),
+      meta: { title: '实验台', icon: 'dashboard' }
     },
-    children: [
-      {
-        path: 'menu1',
-        component: () => import('@/views/nested/menu1/index'), // Parent router-view
-        name: 'Menu1',
-        meta: { title: 'Menu1' },
-        children: [
-          {
-            path: 'menu1-1',
-            component: () => import('@/views/nested/menu1/menu1-1'),
-            name: 'Menu1-1',
-            meta: { title: 'Menu1-1' }
-          },
-          {
-            path: 'menu1-2',
-            component: () => import('@/views/nested/menu1/menu1-2'),
-            name: 'Menu1-2',
-            meta: { title: 'Menu1-2' },
-            children: [
-              {
-                path: 'menu1-2-1',
-                component: () => import('@/views/nested/menu1/menu1-2/menu1-2-1'),
-                name: 'Menu1-2-1',
-                meta: { title: 'Menu1-2-1' }
-              },
-              {
-                path: 'menu1-2-2',
-                component: () => import('@/views/nested/menu1/menu1-2/menu1-2-2'),
-                name: 'Menu1-2-2',
-                meta: { title: 'Menu1-2-2' }
-              }
-            ]
-          },
-          {
-            path: 'menu1-3',
-            component: () => import('@/views/nested/menu1/menu1-3'),
-            name: 'Menu1-3',
-            meta: { title: 'Menu1-3' }
-          }
-        ]
-      },
-      {
-        path: 'menu2',
-        component: () => import('@/views/nested/menu2/index'),
-        name: 'Menu2',
-        meta: { title: 'menu2' }
-      }
-    ]
-  },
-
-  {
-    path: 'external-link',
-    component: Layout,
-    children: [
-      {
-        path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
-        meta: { title: 'External Link', icon: 'link' }
-      }
-    ]
+    {
+      path: 'preinstall_item',
+      name: 'PreinstallItem',
+      component: () => import('@/views/basic/preinstall_item'),
+      meta: { title: '预设单品', icon: 'dashboard', auth: "preinstall_item_list" }
+    },
+    {
+      path: 'preinstall_item_add',
+      name: 'PreinstallItemAdd',
+      hidden: true,
+      component: () => import('@/views/basic/preinstall_item/edit'),
+      meta: { title: '新增预设单品', activeMenu: '/basic/preinstall_item' }
+    },
+    {
+      path: 'preinstall_item_detail',
+      name: 'PreinstallItemDetail',
+      hidden: true,
+      component: () => import('@/views/basic/preinstall_item/detail'),
+      meta: { title: '预设单品详情', activeMenu: '/basic/preinstall_item' }
+    },
+    {
+      path: 'material_seasoning',
+      name: 'MaterialSeasoning',
+      component: () => import('@/views/basic/material_seasoning'),
+      meta: { title: '材料调料管理', icon: 'tree', auth: "material_seasoning_list" }
+    },{
+      path: 'category',
+      name: 'Category',
+      component: () => import('@/views/basic/category'),
+      meta: { title: '分类', icon: 'tree', auth: "category_list" }
+    }]
   },
 
   // 404 page must be placed at the end !!!
@@ -165,7 +97,7 @@ export const constantRoutes = [
 ]
 
 const createRouter = () => new Router({
-  // mode: 'history', // require service support
+  mode: 'history', // require service support
   scrollBehavior: () => ({ y: 0 }),
   routes: constantRoutes
 })

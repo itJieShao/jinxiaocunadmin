@@ -6,6 +6,24 @@ function resolve(dir) {
   return path.join(__dirname, dir)
 }
 
+function proxy(proxyArrary) {
+  let proxy = {}
+  proxyArrary.forEach(item => {
+    const obj = {
+      ['^' + item]: {
+        target: `http://adminapi.yihedev.com${item}`,
+        ws: true,
+        changeOrigin: true,
+        pathRewrite: {
+          ['^' + item]: ''
+        }
+      }
+    }
+    proxy = Object.assign(proxy, obj)
+  })
+  return proxy
+}
+
 const name = defaultSettings.title || 'vue Admin Template' // page title
 
 // If your port is set to 80,
@@ -27,16 +45,21 @@ module.exports = {
   publicPath: '/',
   outputDir: 'dist',
   assetsDir: 'static',
-  lintOnSave: process.env.NODE_ENV === 'development',
+  lintOnSave: process.env.NODE_ENV === 'production',
   productionSourceMap: false,
+  // devServer: {
+  //   port: port,
+  //   open: true,
+  //   overlay: {
+  //     warnings: false,
+  //     errors: true
+  //   },
+  //   before: require('./mock/mock-server.js')
+  // },
   devServer: {
-    port: port,
+    port: 9528,
     open: true,
-    overlay: {
-      warnings: false,
-      errors: true
-    },
-    before: require('./mock/mock-server.js')
+    proxy: proxy(['api','/food','/vendor'])
   },
   configureWebpack: {
     // provide the app's title in webpack's name field, so that
@@ -87,7 +110,7 @@ module.exports = {
             .plugin('ScriptExtHtmlWebpackPlugin')
             .after('html')
             .use('script-ext-html-webpack-plugin', [{
-            // `runtime` must same as runtimeChunk name. default is `runtime`
+              // `runtime` must same as runtimeChunk name. default is `runtime`
               inline: /runtime\..*\.js$/
             }])
             .end()
