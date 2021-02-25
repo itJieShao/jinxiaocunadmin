@@ -1,6 +1,6 @@
 import defaultSettings from '@/settings'
 
-const title = '菜品研发后台'
+const title = '进销存管理后台'
 
 export default function getPageTitle(pageTitle) {
   // if (pageTitle) {

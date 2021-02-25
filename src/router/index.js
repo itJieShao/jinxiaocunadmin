@@ -51,45 +51,170 @@ export const constantRoutes = [
   {
     path: '/basic',
     component: Layout,
-    redirect: '/basic/experiment',
-    meta: { title: '基础管理', icon: 'dashboard' },
+    redirect: '/basic/procurement_plan',
+    meta: { title: '进销存管理', icon: 'el-icon-menu' },
     children: [{
-      path: 'experiment',
-      name: 'Experiment',
-      component: () => import('@/views/basic/experiment/index'),
-      meta: { title: '实验台', icon: 'dashboard' }
+      path: 'procurement_plan',
+      name: 'ProcurementPlan',
+      component: () => import('@/views/basic/procurement_plan/index'),
+      meta: { title: '采购计划管理', icon: 'dashboard' }
     },
     {
-      path: 'preinstall_item',
-      name: 'PreinstallItem',
-      component: () => import('@/views/basic/preinstall_item'),
-      meta: { title: '预设单品', icon: 'dashboard', auth: "preinstall_item_list" }
-    },
-    {
-      path: 'preinstall_item_add',
-      name: 'PreinstallItemAdd',
+      path: 'procurement_plan_add',
+      name: 'procurementPlanAdd',
       hidden: true,
-      component: () => import('@/views/basic/preinstall_item/edit'),
-      meta: { title: '新增预设单品', activeMenu: '/basic/preinstall_item' }
+      component: () => import('@/views/basic/procurement_plan/add'),
+      meta: { title: '新增采购计划', activeMenu: '/basic/procurement_plan' }
     },
     {
-      path: 'preinstall_item_detail',
+      path: 'procurement_plan_detail',
       name: 'PreinstallItemDetail',
       hidden: true,
-      component: () => import('@/views/basic/preinstall_item/detail'),
-      meta: { title: '预设单品详情', activeMenu: '/basic/preinstall_item' }
+      component: () => import('@/views/basic/procurement_plan/detail'),
+      meta: { title: '采购计划详情', activeMenu: '/basic/procurement_plan' }
     },
     {
-      path: 'material_seasoning',
-      name: 'MaterialSeasoning',
-      component: () => import('@/views/basic/material_seasoning'),
-      meta: { title: '材料调料管理', icon: 'tree', auth: "material_seasoning_list" }
-    },{
-      path: 'category',
-      name: 'Category',
-      component: () => import('@/views/basic/category'),
-      meta: { title: '分类', icon: 'tree', auth: "category_list" }
-    }]
+      path: 'charge_back',
+      name: 'ChargeBack',
+      component: () => import('@/views/basic/charge_back'),
+      meta: { title: '退单管理', icon: 'dashboard', auth: "charge_back_list" }
+    },
+    {
+      path: 'charge_back_add',
+      name: 'ChargeBackAdd',
+      hidden: true,
+      component: () => import('@/views/basic/charge_back/add'),
+      meta: { title: '新增退单', activeMenu: '/basic/charge_back' }
+    },
+    {
+      path: 'charge_back_detail',
+      name: 'ChargeBackDetail',
+      hidden: true,
+      component: () => import('@/views/basic/charge_back/detail'),
+      meta: { title: '退单详情', activeMenu: '/basic/charge_back' }
+    },
+    {
+      path: 'warehousing',
+      name: 'Warehousing',
+      component: () => import('@/views/basic/warehousing'),
+      meta: { title: '入库管理', icon: 'dashboard' }
+    },
+    {
+      path: 'warehousing_add',
+      name: 'WarehousingAdd',
+      hidden: true,
+      component: () => import('@/views/basic/warehousing/add'),
+      meta: { title: '新增入库单', activeMenu: '/basic/Warehousing' }
+    },
+    {
+      path: 'warehousing_detail',
+      name: 'WarehousingDetail',
+      hidden: true,
+      component: () => import('@/views/basic/warehousing/detail'),
+      meta: { title: '入库单详情', activeMenu: '/basic/warehousing' }
+    },
+    {
+      path: 'delivery',
+      name: 'Delivery',
+      component: () => import('@/views/basic/delivery'),
+      meta: { title: '出库管理', icon: 'dashboard' }
+    },
+    {
+      path: 'delivery_add',
+      name: 'DeliveryAdd',
+      hidden: true,
+      component: () => import('@/views/basic/delivery/add'),
+      meta: { title: '新增出库单', activeMenu: '/basic/delivery' }
+    },
+    {
+      path: 'delivery_detail',
+      name: 'DeliveryDetail',
+      hidden: true,
+      component: () => import('@/views/basic/delivery/detail'),
+      meta: { title: '出库单详情', activeMenu: '/basic/delivery' }
+    },
+    {
+      path: 'supplier',
+      name: 'Supplier',
+      component: () => import('@/views/basic/supplier'),
+      meta: { title: '供应商管理', icon: 'dashboard' }
+    },
+    {
+      path: 'supplier_add',
+      name: 'SupplierAdd',
+      hidden: true,
+      component: () => import('@/views/basic/supplier/edit'),
+      meta: { title: '新增供应商', activeMenu: '/basic/supplier' }
+    },
+    {
+      path: 'supplier_edit',
+      name: 'SupplierEdit',
+      hidden: true,
+      component: () => import('@/views/basic/supplier/edit'),
+      meta: { title: '编辑供应商', activeMenu: '/basic/supplier' }
+    },
+    {
+      path: 'supplier_detail',
+      name: 'SupplierDetail',
+      hidden: true,
+      component: () => import('@/views/basic/supplier/detail'),
+      meta: { title: '供应商详情', activeMenu: '/basic/supplier' }
+    },
+    {
+      path: 'warehouse',
+      name: 'Warehouse',
+      component: () => import('@/views/basic/warehouse'),
+      meta: { title: '仓库管理', icon: 'dashboard' }
+    },
+    {
+      path: 'warehouse_add',
+      name: 'WarehouseAdd',
+      hidden: true,
+      component: () => import('@/views/basic/warehouse/edit'),
+      meta: { title: '新增仓库', activeMenu: '/basic/warehouse' }
+    },
+    {
+      path: 'warehouse_Edit',
+      name: 'warehouseEdit',
+      hidden: true,
+      component: () => import('@/views/basic/warehouse/edit'),
+      meta: { title: '编辑仓库', activeMenu: '/basic/warehouse' }
+    },
+    {
+      path: 'warehouse_detail',
+      name: 'WarehouseDetail',
+      hidden: true,
+      component: () => import('@/views/basic/warehouse/detail'),
+      meta: { title: '仓库详情', activeMenu: '/basic/warehouse' }
+    },
+    {
+      path: 'goods',
+      name: 'Goods',
+      component: () => import('@/views/basic/goods'),
+      meta: { title: '商品管理', icon: 'dashboard' }
+    },
+    {
+      path: 'goods_add',
+      name: 'GoodsAdd',
+      hidden: true,
+      component: () => import('@/views/basic/goods/edit'),
+      meta: { title: '新增商品', activeMenu: '/basic/goods' }
+    },
+    {
+      path: 'goods_Edit',
+      name: 'GoodsEdit',
+      hidden: true,
+      component: () => import('@/views/basic/goods/edit'),
+      meta: { title: '编辑商品', activeMenu: '/basic/goods' }
+    },
+    {
+      path: 'goods_detail',
+      name: 'GoodsDetail',
+      hidden: true,
+      component: () => import('@/views/basic/goods/detail'),
+      meta: { title: '商品详情', activeMenu: '/basic/goods' }
+    },
+   ]
   },
 
   // 404 page must be placed at the end !!!

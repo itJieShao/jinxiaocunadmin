@@ -1,6 +1,6 @@
 module.exports = {
 
-  title: '菜品研发后台',
+  title: '进销存管理后台',
 
   /**
    * @type {boolean} true | false

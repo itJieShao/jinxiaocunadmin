@@ -9,18 +9,18 @@
       label-position="left"
     >
       <div class="title-container">
-        <h3 class="title">菜品研发后台</h3>
+        <h3 class="title">进销存管理后台</h3>
       </div>
 
-      <el-form-item prop="name">
+      <el-form-item prop="username">
         <span class="svg-container">
           <svg-icon icon-class="user" />
         </span>
         <el-input
-          ref="name"
-          v-model="loginForm.name"
+          ref="username"
+          v-model="loginForm.username"
           placeholder="用户名"
-          name="name"
+          name="username"
           type="text"
           tabindex="1"
           auto-complete="on"
@@ -62,7 +62,7 @@
 
 <script>
 import { validUsername } from "@/utils/validate";
-import {setRouter} from '@/utils/auth'
+import { setRouter } from "@/utils/auth";
 
 export default {
   name: "Login",
@@ -83,11 +83,12 @@ export default {
     };
     return {
       loginForm: {
-        name: "admin",
+        username: "admin",
         password: "admin",
+        type: 2,
       },
       loginRules: {
-        name: [
+        username: [
           { required: true, trigger: "blur", validator: validateUsername },
         ],
         password: [
@@ -126,8 +127,8 @@ export default {
           this.loading = true;
           this.$store
             .dispatch("user/login", this.loginForm)
-            .then((res) => {    
-              localStorage.setItem("name",res.name);
+            .then((res) => {
+              localStorage.setItem("name", res.name);
               this.$router.push({ path: this.redirect || "/" });
               this.loading = false;
             })

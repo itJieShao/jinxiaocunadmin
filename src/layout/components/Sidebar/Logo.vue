@@ -24,7 +24,7 @@ export default {
   },
   data() {
     return {
-      title: '菜品研发后台',
+      title: '进销存管理后台',
       logo: 'https://wpimg.wallstcn.com/69a1c46c-eb1c-4b46-8bd4-e9e686ef5251.png'
     }
   }

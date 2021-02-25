@@ -3,18 +3,13 @@
     <el-row :gutter="20" style="margin-bottom: 20px">
       <el-col :span="10">
         <el-input
-          v-model="listData.value"
-          placeholder="请输入单品名称搜索"
+          v-model="listData.name"
+          placeholder="请输入搜索内容"
         ></el-input>
       </el-col>
       <el-col :span="10">
         <el-button @click="searchBtn" type="primary" icon="el-icon-search"
           >搜索</el-button
-        >
-      </el-col>
-      <el-col :span="4" style="display: flex; justify-content: flex-end">
-        <el-button type="success" icon="el-icon-plus" @click="addMeal"
-          >新增单品</el-button
         >
       </el-col>
     </el-row>
@@ -26,61 +21,63 @@
       highlight-current-row
       style="width: 100%"
     >
-      <el-table-column width="120" align="center" label="单品ID">
+      <el-table-column width="100" align="center" label="退单ID">
         <template slot-scope="scope">
           <span>{{ scope.row.id }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column width="200" align="center" label="单品图片">
+      <el-table-column width="140" align="center" label="关联采购计划ID">
         <template slot-scope="scope">
-          <img
-            style="width: 150px; height: 150px"
-            :src="scope.row.image"
-            alt=""
-          />
+          <span>{{ scope.row.procurement_plan_id }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column width="200" align="center" label="单品名称">
+      <el-table-column width="200" align="center" label="申请采购人员">
         <template slot-scope="scope">
-          <span>{{ scope.row.name }}</span>
+          <span>{{ scope.row.procurement_user_name }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column width="160" align="center" label="配方版本">
+      <!-- <el-table-column width="160" align="center" label="申请采购部门">
         <template slot-scope="scope">
-          <span>{{ scope.row.formula_count }}</span>
+          <span>{{ scope.row.package_box_name }}</span>
+        </template>
+      </el-table-column> -->
+
+      <el-table-column width="140" align="center" label="退单商品">
+        <template slot-scope="scope">
+          <span>{{ scope.row.good_species }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column width="160" align="center" label="实验次数">
+      <el-table-column width="140" align="center" label="退单总数量">
         <template slot-scope="scope">
-          <span>{{ scope.row.test_count }}</span>
+          <span>{{ scope.row.good_num }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column width="200" align="center" label="最近一次实验版本">
+      <el-table-column width="160" align="center" label="退单人员">
         <template slot-scope="scope">
-          <span>{{ scope.row.recently_formula }}</span>
+          <span>{{ scope.row.created_user_name }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column width="200" align="center" label="最近一次实验编号">
+      <el-table-column width="200" align="center" label="申请退单时间">
         <template slot-scope="scope">
-          <span>{{ scope.row.recently_test }}</span>
+          <span>{{ scope.row.created_at }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column width="200" align="center" label="最近一次实验时间">
+      <el-table-column width="200" align="center" label="审核时间">
         <template slot-scope="scope">
-          <span>{{ scope.row.recently_test_time }}</span>
+          <span>{{ scope.row.audit_at }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="定版状态">
+      <el-table-column width="140" align="center" label="审核状态">
         <template slot-scope="scope">
-          <span>{{ scope.row.version_name }}</span>
+          <span>{{ scope.row.status_name }}</span>
         </template>
       </el-table-column>
 
@@ -103,16 +100,18 @@
 </template>
 
 <script>
-import { getList } from "@/api/basic/preinstall_item";
+import { getList } from "@/api/basic/charge_back";
 import Pagination from "@/components/Pagination";
 export default {
   data() {
     return {
-      list: [],
+      list: null,
       listData: {
         page: 1,
         page_size: 10,
-        value: "",
+        vendor_id: "",
+        export: "",
+        name: "",
       },
       loading: false,
       total: 0,
@@ -123,11 +122,8 @@ export default {
     this.getList();
   },
   methods: {
-    addMeal() {
-      this.$router.push("/basic/preinstall_item_add");
-    },
     goDetail(id) {
-      this.$router.push(`/basic/preinstall_item_detail?id=${id}`);
+      this.$router.push(`/basic/charge_back_detail?id=${id}`);
     },
     getList() {
       this.loading = true;
@@ -144,5 +140,3 @@ export default {
   },
 };
 </script>
-
-
