@@ -132,7 +132,7 @@
 </template>
 
 <script>
-import { getList } from "@/api/basic/supplier";
+import { getList,updateStatus } from "@/api/basic/supplier";
 import Pagination from "@/components/Pagination";
 export default {
   data() {
@@ -141,8 +141,6 @@ export default {
       listData: {
         page: 1,
         page_size: 10,
-        vendor_id: "",
-        export: "",
         name: "",
       },
       loading: false,
@@ -175,9 +173,9 @@ export default {
       this.listData.page = 1;
       this.getList();
     },
-    updateStatus(product_id, status, index) {
-      productUpdateStatus({
-        product_id,
+    updateStatus(supplier_id, status, index) {
+      updateStatus({
+        supplier_id,
         status: status ? 0 : 1,
       }).then((res) => {
         if (res) {

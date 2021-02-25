@@ -6,7 +6,7 @@
         <el-col :span="4">
           <el-card shadow="always">
             <div class="item_flex">
-              <p>退单ID</p>
+              <p>供应商ID</p>
               <p>{{ detail.id }}</p>
             </div>
           </el-card>
@@ -14,144 +14,203 @@
         <el-col :span="4">
           <el-card shadow="always">
             <div class="item_flex">
-              <p>关联采购计划ID</p>
-              <p>{{ detail.procurement_plan_id }}</p>
+              <p>供应商名称</p>
+              <p>{{ detail.name }}</p>
             </div>
           </el-card>
         </el-col>
         <el-col :span="4">
           <el-card shadow="always">
             <div class="item_flex">
-              <p>申请采购人员</p>
-              <p>{{ detail.procurement_user_name }}</p>
+              <p>类型</p>
+              <p>{{ detail.type_name }}</p>
             </div>
           </el-card>
         </el-col>
         <el-col :span="4">
           <el-card shadow="always">
             <div class="item_flex">
-              <p>退单人员</p>
-              <p>{{ detail.created_user_name }}</p>
+              <p>统一社会信用代码</p>
+              <p>{{ detail.code }}</p>
             </div>
           </el-card>
         </el-col>
         <el-col :span="4">
           <el-card shadow="always">
             <div class="item_flex">
-              <p>退单商品</p>
-              <p>{{ detail.good_species }}</p>
+              <p>食品许可证</p>
+              <p>{{ detail.food_permit }}</p>
             </div>
           </el-card>
         </el-col>
         <el-col :span="4">
           <el-card shadow="always">
             <div class="item_flex">
-              <p>退单总数量</p>
-              <p>{{ detail.good_num }}</p>
+              <p>其他证件</p>
+              <p>{{ detail.other_permit }}</p>
+            </div>
+          </el-card>
+        </el-col>
+      </el-row>
+      <el-row :gutter="12" style="margin-top: 15px">
+        <el-col :span="4">
+          <el-card shadow="always">
+            <div class="item_flex">
+              <p>联系人</p>
+              <p>{{ detail.contacts }}</p>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="4">
+          <el-card shadow="always">
+            <div class="item_flex">
+              <p>联系电话</p>
+              <p v-if="detail.contact_moblies.length">
+                {{ detail.contact_moblies.join("、") }}
+              </p>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="4">
+          <el-card shadow="always">
+            <div class="item_flex">
+              <p>公司地址</p>
+              <p>{{ detail.address }}</p>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="4">
+          <el-card shadow="always">
+            <div class="item_flex">
+              <p>仓库地址</p>
+              <p>{{ detail.warehouse_address }}</p>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="4">
+          <el-card shadow="always">
+            <div class="item_flex">
+              <p>启用状态</p>
+              <p>{{ detail.status == 1 ? "启用中" : "禁用中" }}</p>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="4">
+          <el-card shadow="always">
+            <div class="item_flex">
+              <p>操作</p>
+              <p>
+                <el-tag
+                  @click="updateStatus"
+                  style="cursor: pointer"
+                  :type="detail.status == 1 ? 'danger' : 'success'"
+                  effect="dark"
+                >
+                  {{ detail.status == 1 ? "禁用" : "启用" }}
+                </el-tag>
+              </p>
             </div>
           </el-card>
         </el-col>
       </el-row>
       <el-divider />
-      <el-table
-        :data="detail.detail"
-        border
-        fit
-        highlight-current-row
-        style="width: 100%"
-      >
-        <el-table-column width="100" align="center" label="商品编码">
-          <template slot-scope="scope">
-            <span>{{ scope.row.id }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column width="140" align="center" label="商品名称">
-          <template slot-scope="scope">
-            <span>{{ scope.row.good_name }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column width="140" align="center" label="采购途径">
-          <template slot-scope="scope">
-            <span>{{ scope.row.way }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column width="200" align="center" label="供应商">
-          <template slot-scope="scope">
-            <span>{{ scope.row.supplier_name }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column width="120" align="center" label="单位">
-          <template slot-scope="scope">
-            <span>{{ scope.row.unit_name }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column width="120" align="center" label="单价">
-          <template slot-scope="scope">
-            <span>{{ scope.row.unit_price }}</span>
-          </template>
-        </el-table-column>
-
-        <el-table-column width="120" align="center" label="运费">
-          <template slot-scope="scope">
-            <span>{{ scope.row.freight }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column width="120" align="center" label="税前总额">
-          <template slot-scope="scope">
-            <span>{{ scope.row.pre_tax_price }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column width="120" align="center" label="税率">
-          <template slot-scope="scope">
-            <span>{{ scope.row.tax_rate }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column width="120" align="center" label="税额">
-          <template slot-scope="scope">
-            <span>{{ scope.row.tax_price }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column width="120" align="center" label="税后总额">
-          <template slot-scope="scope">
-            <span>{{ scope.row.after_tax_price }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column width="120" align="center" label="应付总额">
-          <template slot-scope="scope">
-            <span>{{ scope.row.pay_price }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column width="120" align="center" label="计划采购数量">
-          <template slot-scope="scope">
-            <span>{{ scope.row.num }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column width="120" align="center" label="实际采购数量">
-          <template slot-scope="scope">
-            <span>{{ scope.row.real_num }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column width="120" align="center" label="退回数量">
-          <template slot-scope="scope">
-            <span>{{ scope.row.refund_num }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column width="240" align="center" label="备注">
-          <template slot-scope="scope">
-            <span>{{ scope.row.refund_remark }}</span>
-          </template>
-        </el-table-column>
-      </el-table>
+      <el-row :gutter="12">
+        <el-col :span="4">
+          <el-card shadow="always">
+            <div class="item_flex">
+              <p>历史订单</p>
+              <p>{{ detail.procurement_plan_num }}</p>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="4">
+          <el-card shadow="always">
+            <div class="item_flex">
+              <p>最近采购订单</p>
+              <p>{{ detail.last_procurement_plan_id }}</p>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="4">
+          <el-card shadow="always">
+            <div class="item_flex">
+              <p>最近下单时间</p>
+              <p>{{ detail.last_procurement_plan_at }}</p>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="4">
+          <el-card shadow="always">
+            <div class="item_flex">
+              <p>交易总金额</p>
+              <p>￥{{ detail.trading_price }}</p>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="4">
+          <el-card shadow="always">
+            <div class="item_flex">
+              <p>已结金额</p>
+              <p>
+                ￥{{ detail.settlement_price
+                }}<i
+                  @click="dialogVisible = true"
+                  style="margin-left: 5px; color: #000; cursor: pointer"
+                  class="el-icon-edit"
+                ></i>
+              </p>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="4">
+          <el-card shadow="always">
+            <div class="item_flex">
+              <p>待结欠款</p>
+              <p>￥{{ detail.settlementing_price }}</p>
+            </div>
+          </el-card>
+        </el-col>
+      </el-row>
+      <el-divider />
+      <h4>供应商品</h4>
+      <div class="goods_list">
+        <div
+          class="goods_item"
+          v-for="(item, index) in detail.good_detail"
+          :key="index"
+        >
+          <div class="img_box">
+            <img :src="item.image" alt="" />
+          </div>
+          <p>{{ item.name }}</p>
+        </div>
+      </div>
     </el-card>
+
+    <el-dialog
+      title="修改已结金额"
+      :visible.sync="dialogVisible"
+      width="30%"
+      :before-close="handleClose"
+    >
+      <el-input v-model="detail.settlement_price" placeholder="请输入已结金额"
+        ><template slot="append">元</template></el-input
+      >
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="editPrice">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { getDetail } from "@/api/basic/charge_back";
+import { getDetail, updateStatus, editPrice } from "@/api/basic/supplier";
 export default {
   data() {
     return {
       detail: {},
+      dialogVisible: false,
     };
   },
   created() {
@@ -160,11 +219,75 @@ export default {
   methods: {
     getDetail() {
       getDetail({
-        refund_id: this.$route.query.id,
+        supplier_id: this.$route.query.id,
       }).then((res) => {
         this.detail = res;
+      });
+    },
+    //修改已结金额
+    editPrice() {
+      editPrice({
+        supplier_id: this.detail.id,
+        settlement_price: this.detail.settlement_price,
+      }).then((res) => {
+        if (res) {
+          this.$notify({
+            title: "成功",
+            message: "操作成功",
+            type: "success",
+            duration: 1000,
+          });
+          this.detail.settlementing_price =
+            this.detail.trading_price - this.detail.settlement_price;
+          this.dialogVisible = false;
+        }
+      });
+    },
+    updateStatus() {
+      updateStatus({
+        supplier_id: this.detail.id,
+        status: this.detail.status ? 0 : 1,
+      }).then((res) => {
+        if (res) {
+          this.detail.status = this.detail.status ? 0 : 1;
+          this.$notify({
+            title: "成功",
+            message: "操作成功",
+            type: "success",
+            duration: 1000,
+          });
+        }
       });
     },
   },
 };
 </script>
+<style scoped>
+.goods_list {
+  display: flex;
+  flex-wrap: wrap;
+}
+.goods_item {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #ddd;
+  margin: 0 20px 20px 0;
+}
+.goods_item p {
+  padding: 15px;
+  font-size: 14px;
+  color: #666;
+}
+.img_box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 200px;
+  height: 200px;
+  border-bottom: 1px solid #ddd;
+}
+.img_box img {
+  max-width: 200px;
+  max-height: 200px;
+}
+</style>

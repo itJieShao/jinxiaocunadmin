@@ -33,8 +33,9 @@
         <el-form-item label="类型">
           <el-select
             style="width: 100%"
-            v-model="formData.type"
+            v-model="formData.type_id"
             filterable
+            clearable
             placeholder="请选择供应商类型"
           >
             <el-option
@@ -194,7 +195,7 @@ export default {
   },
   created() {
     if (this.$route.query.id) {
-      this.formData.good_id = this.$route.query.id;
+      this.formData.supplier_id = this.$route.query.id;
       this.getDetail();
     }
     this.getLabelList();
@@ -202,10 +203,11 @@ export default {
   methods: {
     //详情
     getDetail() {
-      getDetail({ good_id: this.formData.good_id }).then((res) => {
+      getDetail({ supplier_id: this.formData.supplier_id }).then((res) => {
         for (let key in this.formData) {
           this.formData[key] = res[key];
         }
+        this.formData.supplier_id = res.id;
         if (res.images.length > 0) {
           let imgsArr = [];
           res.images.forEach((item, index) => {
@@ -247,11 +249,13 @@ export default {
     //提交
     onSubmit() {
       let aData = JSON.parse(JSON.stringify(this.formData));
+      let phoneArr = [];
       aData.images = JSON.stringify(aData.images);
       aData.food_permit_images = JSON.stringify(aData.food_permit_images);
       aData.other_permit_images = JSON.stringify(aData.other_permit_images);
-      aData.contact_moblies = JSON.stringify(aData.contact_moblies);
-      saveApi(this.formData).then((res) => {
+      aData.contact_moblies.forEach((item) => phoneArr.push(item.phone));
+      aData.contact_moblies = JSON.stringify(phoneArr);
+      saveApi(aData).then((res) => {
         if (res) {
           this.$notify({
             title: "成功",

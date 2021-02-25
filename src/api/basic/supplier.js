@@ -30,7 +30,16 @@ export function saveApi(data) {
 //启用/禁用
 export function updateStatus(data) {
     return request({
-        url: '/erp/supplier/detail',
+        url: '/erp/supplier/update-status',
+        method: 'post',
+        data
+    })
+}
+
+//修改已结金额
+export function editPrice(data) {
+    return request({
+        url: '/erp/supplier/update-settlement-price',
         method: 'post',
         data
     })

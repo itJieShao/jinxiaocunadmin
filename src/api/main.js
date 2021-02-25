@@ -26,3 +26,12 @@ export function supplierData(data) {
     data
   })
 }
+
+//审核接口
+export function audit(data) {
+  return request({
+      url: '/other/audit/audit',
+      method: 'post',
+      data
+  })
+}
