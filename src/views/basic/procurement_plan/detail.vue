@@ -128,17 +128,41 @@
             </div>
           </el-card>
         </el-col>
-        <el-col :span="4">
+        <el-col
+          :span="4"
+          v-if="!detail.can_set_procurementer && detail.procurementer_name"
+        >
+          <el-card shadow="always">
+            <div class="item_flex">
+              <p>采购人员</p>
+              <p>{{ detail.procurementer_name }}</p>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col
+          :span="4"
+          v-if="
+            !detail.can_set_procurement_status && detail.procurement_status_name
+          "
+        >
+          <el-card shadow="always">
+            <div class="item_flex">
+              <p>采购状态</p>
+              <p>{{ detail.procurement_status_name }}</p>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col v-if="detail.refund_ids.length" :span="8">
           <el-card shadow="always">
             <div class="item_flex">
               <p>关联退单ID</p>
-              <p>{{ detail.valid_at }}</p>
+              <p>{{ detail.refund_ids.join("、") }}</p>
             </div>
           </el-card>
         </el-col>
       </el-row>
       <el-row style="margin-top: 15px" :gutter="12">
-        <el-col :span="12">
+        <el-col :span="12" v-if="detail.can_set_procurementer">
           <el-card shadow="always">
             <div class="item_flex">
               <p>指定采购人员</p>
@@ -170,7 +194,7 @@
             </div>
           </el-card>
         </el-col>
-        <el-col :span="12">
+        <el-col :span="12" v-if="detail.can_set_procurement_status">
           <el-card shadow="always">
             <div class="item_flex">
               <p>采购状态</p>
@@ -200,24 +224,14 @@
       </el-row>
       <el-divider />
       <div style="margin-bottom: 20px">
-        <div v-if="btnFlag" style="display: flex; justify-content: flex-end">
-          <el-button type="warning" @click="tbtnClick(1)">采购调整</el-button>
-          <el-button type="danger" @click="tbtnClick(2)">退回采购</el-button>
-          <el-button type="success" @click="tbtnClick(3)">采购入库</el-button>
+        <div v-if="!btnFlag" style="display: flex; justify-content: flex-end">
+          <el-button type="warning" @click="btnFlag = true">采购调整</el-button>
+          <el-button type="danger" @click="backBtn">退回采购</el-button>
+          <el-button type="success" @click="addBtn">采购入库</el-button>
         </div>
         <div v-else style="display: flex; justify-content: flex-end">
-          <el-button v-if="btnType == 1" type="primary" @click="optBtn(1)"
-            >保存调整</el-button
-          >
-          <div class="btn_box" v-else-if="btnType == 2">
-            <el-button type="danger" @click="optBtn(2)">去退回</el-button>
-            <span class="count_tip">21</span>
-          </div>
-          <div class="btn_box" v-else>
-            <el-button type="success" @click="optBtn(3)">去入库</el-button>
-            <span class="count_tip">12</span>
-          </div>
-          <el-button v-if="btnType != 1" @click="cancelBtn">取消</el-button>
+          <el-button type="primary" @click="saveTable">保存调整</el-button>
+          <el-button @click="btnFlag = false">取消</el-button>
         </div>
       </div>
       <el-table
@@ -225,9 +239,16 @@
         border
         fit
         highlight-current-row
-        show-summary
         style="width: 100%"
+        @selection-change="handleSelectionChange"
       >
+        <el-table-column
+          type="selection"
+          fixed="left"
+          align="center"
+          width="55"
+        >
+        </el-table-column>
         <el-table-column width="120" align="center" label="商品编码">
           <template slot-scope="scope">
             <span>{{ scope.row.procurement_plan_detail_id }}</span>
@@ -258,19 +279,34 @@
             <span>{{ scope.row.num }}</span>
           </template>
         </el-table-column>
-        <el-table-column width="120" align="center" label="调整增加数量">
+        <el-table-column width="140" align="center" label="调整增加数量">
           <template slot-scope="scope">
-            <span>{{ scope.row.add_num }}</span>
+            <el-input
+              v-if="btnFlag"
+              placeholder="请输入数量"
+              v-model="scope.row.add_num"
+            ></el-input>
+            <span v-else>{{ scope.row.add_num }}</span>
           </template>
         </el-table-column>
-        <el-table-column width="120" align="center" label="调整减少数量">
+        <el-table-column width="140" align="center" label="调整减少数量">
           <template slot-scope="scope">
-            <span>{{ scope.row.reduce_num }}</span>
+            <el-input
+              v-if="btnFlag"
+              placeholder="请输入数量"
+              v-model="scope.row.reduce_num"
+            ></el-input>
+            <span v-else>{{ scope.row.reduce_num }}</span>
           </template>
         </el-table-column>
-        <el-table-column width="120" align="center" label="实际采购数量">
+        <el-table-column width="140" align="center" label="实际采购数量">
           <template slot-scope="scope">
             <span>{{ scope.row.real_num }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column width="120" align="center" label="退单数量">
+          <template slot-scope="scope">
+            <span>{{ scope.row.refund_num }}</span>
           </template>
         </el-table-column>
         <el-table-column width="120" align="center" label="单价">
@@ -313,14 +349,9 @@
             <span>{{ scope.row.in_stock_status_name }}</span>
           </template>
         </el-table-column>
-        <el-table-column width="200" fixed="right" align="center" label="操作">
+        <el-table-column v-if="btnFlag" width="160" fixed="right" align="center" label="操作">
           <template slot-scope="scope">
-            <el-button size="mini" @click="goDetail(scope.row.id)"
-              >退回</el-button
-            >
-            <el-button size="mini" @click="goDetail(scope.row.id)"
-              >入库</el-button
-            >
+            <i @click="delItem(scope.row.$index)" style="color: red; cursor: pointer" class="el-icon-delete"></i>
           </template>
         </el-table-column>
       </el-table>
@@ -333,17 +364,18 @@ import {
   getDetail,
   setProcurementer,
   setStatus,
+  setApi,
 } from "@/api/basic/procurement_plan";
-import { userData } from "@/api/main";
+import { userData, audit } from "@/api/main";
 export default {
   data() {
     return {
       detail: {},
-      btnFlag: true,
-      btnType: "",
+      btnFlag: false,
       procurementer: "", //采购人员ID
       procurement_status: "", //采购状态ID
       userData: [], //采购人员列表
+      checkedList: [],
     };
   },
   created() {
@@ -351,43 +383,133 @@ export default {
     this.getLabelList();
   },
   methods: {
+    delItem(index) {
+      this.detail.detail.splice(index, 1);
+    },
+    //调整采购
+    saveTable() {
+      let list = JSON.parse(JSON.stringify(this.detail.detail)),
+        aData = [];
+      list.forEach((item) => {
+        aData.push({
+          procurement_plan_detail_id: item.procurement_plan_detail_id,
+          add_num: item.add_num,
+          reduce_num: item.reduce_num,
+        });
+      });
+      setApi({
+        procurement_plan_id: this.detail.id,
+        set_data: JSON.stringify(aData),
+      }).then((res) => {
+        if (res) {
+          this.btnFlag = false;
+          this.getDetail();
+          this.$notify({
+            title: "成功",
+            message: "保存成功",
+            type: "success",
+            duration: 1000,
+          });
+        }
+      });
+    },
+    //去入库
+    addBtn() {
+      if (!this.checkedList.length) {
+        return this.$message({
+          message: "请先勾选要入库的商品",
+          type: "error",
+          duration: 1000,
+        });
+      }
+      localStorage.setItem(
+        "warehousingData",
+        JSON.stringify({
+          procurement_plan_id: this.detail.id,
+          checkedList: this.checkedList,
+        })
+      );
+      this.$router.push("/basic/warehousing_add");
+    },
+    //去退单
+    backBtn() {
+      if (!this.checkedList.length) {
+        return this.$message({
+          message: "请先勾选要退单的商品",
+          type: "error",
+          duration: 1000,
+        });
+      }
+      localStorage.setItem(
+        "chargeBackData",
+        JSON.stringify({
+          procurement_plan_id: this.detail.id,
+          checkedList: this.checkedList,
+        })
+      );
+      this.$router.push("/basic/charge_back_add");
+    },
+    handleSelectionChange(val) {
+      this.checkedList = val;
+    },
     //提交采购人员
     setProcurementer() {
+      if (!this.procurementer) {
+        return this.$message({
+          message: "请先选择采购人员",
+          type: "error",
+          duration: 1000,
+        });
+      }
       setProcurementer({
         procurement_plan_id: this.detail.id,
         procurementer: this.procurementer,
-      }).then((res) => {});
+      }).then((res) => {
+        if (res) {
+          this.$notify({
+            title: "成功",
+            message: "操作成功",
+            type: "success",
+            duration: 1000,
+          });
+        }
+      });
     },
     //提交采购状态
     setStatus() {
+      if (!this.procurementer) {
+        return this.$message({
+          message: "请先选择采购人员",
+          type: "error",
+          duration: 1000,
+        });
+      }
+      if (!this.procurement_status) {
+        return this.$message({
+          message: "请先选择采购状态",
+          type: "error",
+          duration: 1000,
+        });
+      }
       setStatus({
         procurement_plan_id: this.detail.id,
         procurement_status: this.procurement_status,
-      }).then((res) => {});
+      }).then((res) => {
+        if (res) {
+          this.$notify({
+            title: "成功",
+            message: "操作成功",
+            type: "success",
+            duration: 1000,
+          });
+        }
+      });
     },
     //采购人员下拉框列表
     getLabelList() {
       userData().then((res) => {
         this.userData = res;
       });
-    },
-    tbtnClick(type) {
-      this.btnFlag = false;
-      this.btnType = type;
-    },
-    optBtn(type) {
-      switch (type) {
-        case 1:
-          break;
-        case 2:
-          break;
-        case 3:
-          break;
-      }
-    },
-    cancelBtn() {
-      this.btnFlag = true;
-      this.btnType = "";
     },
     getSummaries(param) {
       const { columns, data } = param;

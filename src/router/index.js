@@ -104,7 +104,7 @@ export const constantRoutes = [
       name: 'WarehousingAdd',
       hidden: true,
       component: () => import('@/views/basic/warehousing/add'),
-      meta: { title: '新增入库单', activeMenu: '/basic/Warehousing' }
+      meta: { title: '新增入库单', activeMenu: '/basic/warehousing' }
     },
     {
       path: 'warehousing_detail',

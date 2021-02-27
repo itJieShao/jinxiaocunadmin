@@ -17,3 +17,21 @@ export function getDetail(data) {
         data
     })
 }
+
+//获取可出库商品
+export function canOutStoreList(data) {
+    return request({
+        url: '/erp/out-store/get-can-out-store_data',
+        method: 'post',
+        data
+    })
+}
+
+//新增
+export function addApi(data) {
+    return request({
+        url: '/erp/out-store/add',
+        method: 'post',
+        data
+    })
+}

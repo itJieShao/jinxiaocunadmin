@@ -1,14 +1,8 @@
 <template>
   <div class="app-container">
     <h2>新增采购计划</h2>
-    <el-table
-      :data="list"
-      border
-      fit
-      highlight-current-row
-      style="width: 100%"
-    >
-      <el-table-column width="200" align="center" label="商品编码">
+    <el-table :data="list" border fit highlight-current-row style="width: 100%">
+      <!-- <el-table-column width="200" align="center" label="商品编码">
         <template slot-scope="scope">
           <el-select
             @change="goodsChange(scope.row.good_id, scope.$index)"
@@ -51,6 +45,44 @@
                 remoteMethod(query, 2);
               }
             "
+          >
+            <el-option
+              v-for="item in goodsList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            >
+            </el-option>
+          </el-select>
+        </template>
+      </el-table-column> -->
+      <el-table-column width="200" align="center" label="商品编码">
+        <template slot-scope="scope">
+          <el-select
+          v-loading="selLoading"
+            v-model="scope.row.good_id"
+            filterable
+            clearable
+            placeholder="请选择商品编码"
+          >
+            <el-option
+              v-for="item in goodsList"
+              :key="item.id"
+              :label="item.id"
+              :value="item.id"
+            >
+            </el-option>
+          </el-select>
+        </template>
+      </el-table-column>
+      <el-table-column width="200" align="center" label="商品名称">
+        <template slot-scope="scope">
+          <el-select
+          v-loading="selLoading"
+            v-model="scope.row.good_id"
+            filterable
+            clearable
+            placeholder="请选择商品名称"
           >
             <el-option
               v-for="item in goodsList"
@@ -187,10 +219,11 @@ export default {
       goodsListData: {
         name: "",
         page: 1,
-        page_size: 40,
+        page_size: 1000,
       },
       loadmoreFlag: true,
       supplierList: [],
+      selLoading:false,
     };
   },
   components: { Pagination },
@@ -209,8 +242,10 @@ export default {
       }
     },
     getGoodsList() {
+      this.selLoading = true;
       getGoodsList(this.goodsListData).then((res) => {
-        if (res.list.length < 40) {
+        this.selLoading = false;
+        if (res.list.length < 1000) {
           this.loadmoreFlag = false;
         }
         this.total = res.count;
@@ -227,18 +262,16 @@ export default {
       }
     },
     remoteMethod(query, type) {
-      if (query !== "") {
-        this.goodsList = [];
-        if (type == 1) {
-          this.goodsListData.id = query;
-          this.goodsListData.name = "";
-        } else {
-          this.goodsListData.id = "";
-          this.goodsListData.name = query;
-        }
-        this.goodsListData.page = 1;
-        this.getGoodsList();
+      this.goodsList = [];
+      if (type == 1) {
+        this.goodsListData.id = query;
+        this.goodsListData.name = "";
+      } else {
+        this.goodsListData.id = "";
+        this.goodsListData.name = query;
       }
+      this.goodsListData.page = 1;
+      this.getGoodsList();
     },
     resetSelect() {
       this.goodsList = [];

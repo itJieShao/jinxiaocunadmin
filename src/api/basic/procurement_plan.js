@@ -44,3 +44,12 @@ export function addApi(data) {
         data
     })
 }
+
+//采购调整
+export function setApi(data) {
+    return request({
+        url: '/erp/procurement-plan/set',
+        method: 'post',
+        data
+    })
+}

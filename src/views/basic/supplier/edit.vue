@@ -174,7 +174,7 @@ export default {
         supplier_id: "",
         images: [],
         name: "",
-        type: "",
+        type_id: "",
         code: "",
         food_permit: "",
         food_permit_images: [],
@@ -204,6 +204,11 @@ export default {
     //详情
     getDetail() {
       getDetail({ supplier_id: this.formData.supplier_id }).then((res) => {
+        let contact_moblies = [];
+        res.contact_moblies.forEach((item) => {
+          contact_moblies.push({ phone: item });
+        });
+        res.contact_moblies = contact_moblies;
         for (let key in this.formData) {
           this.formData[key] = res[key];
         }

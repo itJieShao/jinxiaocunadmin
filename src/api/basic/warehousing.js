@@ -17,3 +17,30 @@ export function getDetail(data) {
         data
     })
 }
+
+//获取可以入库的采购计划
+export function canInStoreList(data) {
+    return request({
+        url: '/erp/procurement-plan/get-can-in-store-data',
+        method: 'post',
+        data
+    })
+}
+
+//新增入库
+export function addApi(data) {
+    return request({
+        url: '/erp/in-store/add',
+        method: 'post',
+        data
+    })
+}
+
+//调整入库
+export function setApi(data) {
+    return request({
+        url: '/erp/in-store/set',
+        method: 'post',
+        data
+    })
+}

@@ -1,231 +1,280 @@
 <template>
   <div class="app-container">
     <h2>新增出库单</h2>
+    <el-row :gutter="20" style="margin-bottom: 20px">
+        <el-col :span="8" class="top_flex">
+          <h5>出库单类型：</h5>
+          <el-select v-model="formData.type_id" placeholder="请选择出库单类型">
+            <el-option
+              v-for="item in typeList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            >
+            </el-option>
+          </el-select>
+        </el-col>
+        <el-col :span="8" class="top_flex" v-if="formData.type_id == 1">
+          <h5>取货人：</h5>
+          <el-select v-model="formData.take_user_id" clearable placeholder="请选择取货人">
+            <el-option
+              v-for="item in userData"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            >
+            </el-option>
+          </el-select>
+        </el-col>
+        <el-col :span="8" class="top_flex" v-else>
+          <h5>仓库：</h5>
+          <el-select v-model="formData.in_store_id" clearable placeholder="请选择仓库">
+            <el-option
+              v-for="item in storeData"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            >
+            </el-option>
+          </el-select>
+        </el-col>
+        <el-col :span="8" class="top_flex">
+          <h5>仓库配货员：</h5>
+          <el-select v-model="formData.distribution_user_id" clearable placeholder="请选择仓库配货员">
+            <el-option
+              v-for="item in userData"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            >
+            </el-option>
+          </el-select>
+        </el-col>
+      </el-row>
     <el-card shadow="always">
-      
+      <el-row :gutter="20" style="margin-bottom: 20px">
+        <el-col :span="12" style="display: flex">
+          <el-select style="width:100%;" v-model="listData.store_ids" multiple placeholder="请选择仓库">
+            <el-option
+              v-for="item in storeData"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            >
+            </el-option>
+          </el-select>
+          <el-input
+            v-model="listData.name"
+            placeholder="请输入搜索内容"
+          ></el-input>
+        </el-col>
+        <el-col :span="4">
+          <el-button @click="getCanOutStoreList" type="primary" icon="el-icon-search"
+            >搜索</el-button
+          >
+        </el-col>
+      </el-row>
+      <el-table
+        v-loading="loading"
+        :data="list"
+        border
+        fit
+        highlight-current-row
+        style="width: 100%"
+        @selection-change="handleSelectionChange"
+      >
+        <el-table-column
+          type="selection"
+          fixed="left"
+          align="center"
+          width="55"
+        >
+        </el-table-column>
+        <el-table-column align="center" label="商品ID">
+          <template slot-scope="scope">
+            <span>{{ scope.row.good_id }}</span>
+          </template>
+        </el-table-column>
+
+        <el-table-column align="center" label="商品名称">
+          <template slot-scope="scope">
+            <span>{{ scope.row.good_name }}</span>
+          </template>
+        </el-table-column>
+
+        <el-table-column align="center" label="单位">
+          <template slot-scope="scope">
+            <span>{{ scope.row.unit_name }}</span>
+          </template>
+        </el-table-column>
+
+        <el-table-column align="center" label="实时总库存数量">
+          <template slot-scope="scope">
+            <span>{{ scope.row.store_num }}</span>
+          </template>
+        </el-table-column>
+
+        <el-table-column align="center" label="存放仓库">
+          <template slot-scope="scope">
+            <el-checkbox v-for="(item,index) in scope.row.store_good_data" :key="index" v-model="item.checked">{{item.store_name}}</el-checkbox>
+          </template>
+        </el-table-column>
+
+        <el-table-column align="center" label="仓库库存数量">
+          <template slot-scope="scope">
+            <p v-for="item in scope.row.store_good_data" :key="item.store_good_id">{{item.num}}</p>
+          </template>
+        </el-table-column>
+
+      </el-table>
+      <el-row type="flex" class="row-bg" justify="end" style="margin:20px 0;">
+        <el-button type="success" @click="addBtn">添加到出库单</el-button>
+      </el-row>
+      <el-card shadow="always" v-show="submitList.length">
+      <el-table
+        :data="submitList"
+        border
+        fit
+        highlight-current-row
+        style="width: 100%"
+      >
+        </el-table-column>
+        <el-table-column align="center" label="商品编码">
+          <template slot-scope="scope">
+            <span>{{ scope.row.good_id }}</span>
+          </template>
+        </el-table-column>
+
+        <el-table-column align="center" label="商品名称">
+          <template slot-scope="scope">
+            <span>{{ scope.row.good_name }}</span>
+          </template>
+        </el-table-column>
+
+        <el-table-column align="center" label="单位">
+          <template slot-scope="scope">
+            <span>{{ scope.row.unit_name }}</span>
+          </template>
+        </el-table-column>
+
+        <el-table-column align="center" label="出库仓库">
+          <template slot-scope="scope">
+            <p v-for="(item,index) in scope.row.store_good_data" :key="index">{{item.store_name}}</p>
+          </template>
+        </el-table-column>
+
+        <el-table-column align="center" label="出库数量">
+          <template slot-scope="scope">
+            <el-input v-for="(item,index) in scope.row.store_good_data" :key="index" v-model="item.num" placeholder="请输入数量"></el-input>
+          </template>
+        </el-table-column>
+
+        <el-table-column align="center" label="操作">
+          <template slot-scope="scope">
+             <i v-for="(item,index) in scope.row.store_good_data" :key="index" @click="delItem(scope.row.$index,index)" class="el-icon-delete"></i>
+          </template>
+        </el-table-column>
+      </el-table>
+      <el-row type="flex" class="row-bg" justify="end" style="margin-top:20px;">
+        <el-button type="primary" @click="onSubmit">提交出库单</el-button>
+      </el-row>
+      </el-card>
     </el-card>
   </div>
 </template>
 <script>
-// import {
-//   updateProduct,
-//   productList,
-//   productDetail,
-//   supplierList,
-//   materialData,
-//   seasoningData,
-//   packageBox,
-// } from "@/api/basic";
-import Pagination from "@/components/Pagination";
+import { canOutStoreList, addApi } from "@/api/basic/delivery";
+import { getStoreData, userData } from "@/api/main";
 export default {
   data() {
     return {
-      formData: {
+      typeList: [
+        { name: "普通出库单", id: 1 },
+        { name: "仓库调配单", id: 2 },
+      ],
+      listData: {
+        store_ids: [],
         name: "",
-        image: "",
-        product_category_id: "",
-        product_package_box_id: "",
-        taste_id: "",
-        warn_cost_price: "",
-        cost_price: "",
-        weight: "",
-        supplier_id: "",
-        process_indicators: "",
-        quality_standard: "",
-        material: [],
-        seasoning: [],
-        temperature_corve: [],
-        heating_rate_id: "",
-        temperature_curve_sensitive: "",
-        cell_location: "",
-      }, //表单提交数据
-      checkedProductData: [],
-      productListData: {
-        export: "",
-        name: "",
-        page: 1,
-        page_size: 5,
       },
-      productList: [],
-      total: 0,
-      dialogImageUrl: "",
-      dialogVisible: false,
-      dialogTableVisible: false,
-      labelList: [],
-      packageBox: [],
-      tasteList: [],
-      supplierList: [],
-      materialData: [],
-      materialId: "",
-      materialNum: "",
-      seasoningData: [],
-      seasoningId: "",
-      seasoningNum: "",
-      time: "",
-      temperature: "",
-      detailMainImgFile: [],
-      heatingRateList: [],
-      temperatureCurveSensitive: [
-        { name: "最不敏感", id: 1 },
-        { name: "不敏感", id: 2 },
-        { name: "一般", id: 3 },
-        { name: "比较敏感", id: 4 },
-        { name: "最敏感", id: 5 },
-      ],
-      cellLocationList: [
-        { name: "上层", id: 1 },
-        { name: "中层", id: 2 },
-        { name: "下层", id: 3 },
-      ],
+      formData: {
+        type_id: 1,
+        take_user_id: "",
+        distribution_user_id: "",
+        in_store_id: "",
+      },
+      list: [],
+      checkedList: [],
+      submitList: [],
+      loading: false,
+      storeData: [],
+      userData: [],
     };
   },
-  components: { Pagination },
-  computed: {
-    checkedMaterial() {
-      if (this.materialId) {
-        return this.materialData.find((item) => item.id == this.materialId);
-      }
-    },
-    checkedSeasoning() {
-      if (this.seasoningId) {
-        return this.seasoningData.find((item) => item.id == this.seasoningId);
-      }
-    },
-  },
   created() {
-    if (this.$route.query.id) {
-      this.formData.id = this.$route.query.id;
-      this.getDetail();
-    }
-    this.getLabelList();
-    this.getPackageBox();
-    this.getSupplierList();
-    this.getTasteList();
-    this.getMaterialData();
-    this.getSeasoningData();
-    this.getHeatingRateList();
+    this.getCanOutStoreList();
+    this.getStoreData();
+    this.getUserData();
   },
   methods: {
-    //新增材料
-    addMaterial() {
-      if (!this.materialId) {
-        return this.$message.error("请选择要新增的材料");
+    getUserData() {
+      userData().then((res) => {
+        this.userData = res;
+      });
+    },
+    //添加到出库单
+    addBtn() {
+      if (!this.checkedList.length) {
+        return this.$message({
+          message: "请先勾选要添加的入库单",
+          type: "error",
+          duration: 1000,
+        });
       }
-      if (!this.materialNum) {
-        return this.$message.error("请填写数量");
-      }
-      this.formData.material.push({
-        material_name: this.checkedMaterial.name,
-        unit_name: this.checkedMaterial.unit_name,
-        material_id: this.materialId,
-        num: this.materialNum,
-      });
-      this.materialId = this.materialNum = "";
+      this.submitList = this.submitList.concat(this.checkedList);
     },
-    //删除材料
-    deleteMaterial(id) {
-      let index = this.formData.material.findIndex(
-        (item) => item.material_id == id
-      );
-      this.formData.material.splice(index, 1);
+    //删除入库单
+    delItem(index) {
+      this.submitList.splice(index, 1);
     },
-    //新增调料
-    addSeasoning() {
-      if (!this.seasoningId) {
-        return this.$message.error("请选择要新增的调料");
-      }
-      if (!this.seasoningNum) {
-        return this.$message.error("请填写数量");
-      }
-      this.formData.seasoning.push({
-        seasoning_name: this.checkedSeasoning.name,
-        unit_name: this.checkedSeasoning.unit_name,
-        seasoning_id: this.seasoningId,
-        num: this.seasoningNum,
-      });
-      this.seasoningId = this.seasoningNum = "";
+    handleSelectionChange(val) {
+      this.checkedList = val;
     },
-    //删除调料
-    deleteSeasoning(id) {
-      let index = this.formData.seasoning.findIndex(
-        (item) => item.seasoning_id == id
-      );
-      this.formData.seasoning.splice(index, 1);
-    },
-    //新增温度曲线
-    addTemperatureCorve() {
-      if (!this.time || !this.temperature) {
-        return this.$message.error("请输入时间和温度");
-      }
-      this.formData.temperature_corve.push({
-        time: this.time,
-        temperature: this.temperature,
-      });
-      this.time = this.temperature = "";
-    },
-    //删除温度曲线
-    deleteTemperatureCorve(index) {
-      this.formData.temperature_corve.splice(index, 1);
-    },
-    //预设单品详情
-    getDetail() {
-      productDetail({ id: this.$route.query.id }).then((res) => {
-        this.formData = res;
-        if (res.image) {
-          this.detailMainImgFile = [
-            { name: "detailMainImgFile", url: res.image },
-          ];
-        }
-        this.$set(this.formData, "material", res.material_data);
-        this.$set(this.formData, "seasoning", res.seasoning_data);
-        this.$set(this.formData, "temperature_corve", res.temperature_curve);
+    getStoreData() {
+      getStoreData().then((res) => {
+        this.storeData = res;
       });
     },
-    //预设单品标签列表
-    getLabelList() {
-      categoryData({ type: 2 }).then((res) => {
-        this.labelList = res;
-      });
-    },
-    //包装列表
-    getPackageBox() {
-      packageBox().then((res) => {
-        this.packageBox = res;
-      });
-    },
-    //味型列表
-    getTasteList() {
-      categoryData({ type: 5 }).then((res) => {
-        this.tasteList = res;
-      });
-    },
-    //供应商列表
-    getSupplierList() {
-      supplierList().then((res) => {
-        this.supplierList = res;
-      });
-    },
-    //材料列表
-    getMaterialData() {
-      materialData().then((res) => {
-        this.materialData = res;
-      });
-    },
-    //调料列表
-    getSeasoningData() {
-      seasoningData({ type: 4 }).then((res) => {
-        this.seasoningData = res;
-      });
-    },
-    //加热速率列表
-    getHeatingRateList() {
-      categoryData({ type: 9 }).then((res) => {
-        this.heatingRateList = res;
+    getCanOutStoreList() {
+      let listData = this.listData;
+      this.loading = true;
+      canOutStoreList({
+        store_ids: JSON.stringify(listData.store_ids),
+        name: listData.name,
+      }).then((res) => {
+        res.forEach((item) => {
+          item.store_good_data.forEach((it) => {
+            it.checked = true;
+          });
+        });
+        this.list = res;
+        this.loading = false;
       });
     },
     //提交
     onSubmit() {
-      updateProduct(this.formData).then((res) => {
+      let submitList = JSON.parse(JSON.stringify(this.submitList)),
+        aData = JSON.parse(JSON.stringify(this.formData)),
+        out_store_data = [];
+      submitList.forEach((item) => {
+        item.store_good_data.forEach((it) => {
+          out_store_data.push({
+            store_good_id: it.store_good_id,
+            num: it.num,
+          });
+        });
+      });
+      aData.out_store_data = JSON.stringify(out_store_data);
+      addApi(aData).then((res) => {
         if (res) {
           this.$notify({
             title: "成功",
@@ -248,16 +297,55 @@ export default {
       this.dialogImageUrl = file.url;
       this.dialogVisible = true;
     },
-    //上传主图
-    upLoadMainImg(res, file) {
+    //上传商品图
+    upLoadImg(res, file, fileList) {
       if (res.status) {
-        this.formData.image = res.data.image_url;
+        this.formData.images.push(res.data.image_url);
       }
+    },
+    //删除商品图
+    handleRemove(file, fileList) {
+      const index = this.formData.images.findIndex((item) => item == file.url);
+      this.formData.images.splice(index, 1);
     },
   },
 };
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
+.el-icon-delete {
+  display: block;
+  color: red;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+.top_flex {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  h5 {
+    color: #666;
+  }
+}
+.phone_item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  .phone_item_icon {
+    width: 80px;
+    display: flex;
+    font-size: 26px;
+    margin-left: 10px;
+    .el-icon-remove-outline {
+      cursor: pointer;
+      color: red;
+    }
+    .el-icon-circle-plus-outline {
+      cursor: pointer;
+      color: blue;
+      margin-left: 10px;
+    }
+  }
+}
 p {
   margin: 0;
 }

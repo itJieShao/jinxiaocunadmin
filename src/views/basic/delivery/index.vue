@@ -34,13 +34,13 @@
 
       <el-table-column width="120" align="center" label="出库单类型">
         <template slot-scope="scope">
-          <span>{{ scope.row.id }}</span>
+          <span>{{ scope.row.type_name }}</span>
         </template>
       </el-table-column>
 
       <el-table-column width="160" align="center" label="取货部门/仓库">
         <template slot-scope="scope">
-          <span>{{ scope.row.name }}</span>
+          <span>{{ scope.row.in_store_name }}</span>
         </template>
       </el-table-column>
 

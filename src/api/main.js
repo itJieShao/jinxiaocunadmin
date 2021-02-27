@@ -35,3 +35,12 @@ export function audit(data) {
       data
   })
 }
+
+//获取启用的仓库
+export function getStoreData(data) {
+  return request({
+      url: '/erp/store/get-list',
+      method: 'post',
+      data
+  })
+}

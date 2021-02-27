@@ -17,3 +17,12 @@ export function getDetail(data) {
         data
     })
 }
+
+//退单
+export function refundApi(data) {
+    return request({
+        url: '/erp/refund/add',
+        method: 'post',
+        data
+    })
+}
